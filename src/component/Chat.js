@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react'
 import '../css/Chat.css'
 import {Avatar, IconButton} from "@material-ui/core"
 import AttachFile from "@material-ui/icons/AttachFile"
@@ -6,10 +6,25 @@ import MoreVertIcon from "@material-ui/icons/MoreVert"
 import SearchOutlined from "@material-ui/icons/SearchOutlined"
 import InsertEmoticon from '@material-ui/icons/InsertEmoticon'
 import MicIcon from '@material-ui/icons/Mic'
+import { useParams } from 'react-router-dom';
+import db from '../firebase'
 
 
 function Chat() {
     const [input, setInput] = useState("");
+    const {roomId} = useParams();
+    const [roomName, setRoomName] = useState("");
+
+    useEffect(() => {
+        if(roomId){
+            db.collection('rooms')
+            .doc(roomId)
+            .onSnapshot((snapshot) =>
+                setRoomName(snapshot.data().name)
+            )
+        }
+        
+    }, [roomId])
 
     const sendMessage = (e) =>{
         e.preventDefault();
@@ -22,7 +37,7 @@ function Chat() {
             <div className="chat_header">
             <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRA7ECizMinUV4oPQG6BUFIZZmeXehbj7pytQ&usqp=CAU" />
                 <div className="chat_headerInfo">
-                    <h2>Room name</h2>
+                    <h2>{roomName}</h2>
                     <p>Last Message......</p>
                 </div>
                 <div className="chat_headerRight">

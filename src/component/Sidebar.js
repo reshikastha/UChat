@@ -8,13 +8,14 @@ import SearchOutlined from "@material-ui/icons/SearchOutlined"
 import SidebarChat from '../component/SidebarChat'
 
 import db from '../firebase';
+import { Unsubscribe } from '@material-ui/icons';
 
 function Sidebar() {
  const [rooms, setRooms] = useState([]);
 
  useEffect(() => {
-   db.collection('rooms').onSnapshot(
-       snapshot =>(
+  const Unsubscribe= db.collection('rooms').onSnapshot(
+       (snapshot) =>(
            setRooms(snapshot.docs.map(doc =>
             ({
                 id:doc.id,
@@ -22,6 +23,9 @@ function Sidebar() {
             })
             ))
        ))
+       return () =>{
+           Unsubscribe();
+       }
  }, [])
     return (
         <div className="sidebar">
